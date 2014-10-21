@@ -1,0 +1,67 @@
+<project name="myComputerManual" default="compile" basedir=".">
+
+  <property name="build.compiler" 	value="modern"/>
+  <property name="src" 				value="src"/>
+  <property name="BUILD" 			value="build"/>
+  <property name="classes" 			value="${BUILD}/classes"/>
+
+  <target name="compile"
+          depends="myComputerManual"/>
+
+  <target name="clean">
+       <delete dir="${BUILD}"/>
+       <delete file="./${tarballFileName}" quiet="true"/>
+  </target>
+
+
+
+  <!-- Prepare target directories -->
+  <target name="prepare">
+        <mkdir dir="${BUILD}"/>
+        <mkdir dir="${classes}"/>
+  </target>
+
+
+  <!-- ** means all subdirectories as well -->
+  <!-- * means all files in the current directory -->
+  <!-- for just java files use *.java -->
+
+  <target name="myComputerManual" depends="prepare">
+    <javac srcdir="${src}"
+           includes="myComputerManual/**"
+           excludes="**/package.html"
+           destdir="${classes}"
+           classpath="${classes}"
+           debug="on"
+           optimize="on"
+           deprecation="off"/>
+  </target>
+
+  <target name="jar" depends="compile">
+        <mkdir dir="${BUILD}/jar"/>
+        <jar destfile="${BUILD}/jar/myComputerManual.jar" basedir="${BUILD}/classes">
+            <manifest>
+                <attribute name="Main-Class" value="myComputerManual.driver.Driver"/>
+            </manifest>
+        </jar>
+  </target>
+
+ <target name="tarzip" depends="clean">
+    <tar destfile="${basedir}/Snigdha_Mohanty_assign2.tar.gz"
+    basedir="../."
+    includes="myComputerManual/**"
+    compression="gzip"/>
+</target>
+
+
+  <target name="run" depends="jar">
+        <java jar="${BUILD}/jar/myComputerManual.jar"  fork="true">
+	  		<arg value="${arg0}"/>
+		</java>
+  </target>
+
+  <target name="javadoc" >
+      <mkdir dir="${BUILD}/javadoc"/>
+      <javadoc sourcepath="${src}" destdir="${BUILD}/javadoc" locale="en_US"/>
+  </target>
+</project>
